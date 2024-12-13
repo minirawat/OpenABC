@@ -1,4 +1,5 @@
 # OpenABC-D: A Large-Scale Dataset For Machine Learning Guided Integrated Circuit Synthesis 
+**FORKed version for CS224W: Machine Learning with Graphs. SynP model for CircuitQuest project**
 [![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen)](https://github.com/NYU-MLDA/OpenABC) 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![Github Repo stars](https://img.shields.io/github/stars/NYU-MLDA/OpenABC?style=social)]()
