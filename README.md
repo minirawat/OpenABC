@@ -58,7 +58,7 @@ Here are few resources to install the packages (if not using *requirements.txt*)
 
 Make sure that that the cudatoolkit version in the gpu matches with the pytorch-geometric's (and dependencies) CUDA version.
 
-UPDATE: The code in this forked repository has been tested to work on newer and latest versions of pytorch/pyG libraries. This requires some manual configuration and more importantly conversion of the saved
+**UPDATE:** The code in this forked repository has been tested to work on newer and latest versions of pytorch/pyG libraries. This requires some manual configuration and more importantly conversion of the saved
 pt files into a format recognizable by newer PyG library. Here is our pip freeze list (limited to relevant entries for this project). We strongly recommend using MiniForge to create a virtual enviornment. Also, this configuration works fully on Mac M1 Pro ARM architecture and GCP Cloud VM CUDA enabled systems. (Tested in T4/L4/A100 GPU systems) 
 
 - cycler==0.12.1
