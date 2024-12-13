@@ -77,7 +77,7 @@ def main():
     model.load_state_dict(torch.load(MODEL_PATH))
 
     # Initialize the dataloaders
-    train_dl = DataLoader(testDS, shuffle=True, batch_size=batchSize, pin_memory=True, num_workers=4)
+    train_dl = DataLoader(testDS, shuffle=True, batch_size=batchSize, pin_memory=True, num_workers=0)
 
     # Set number of cluster heads
     desEmbed, desName, synFlowEmbed = getEmbeddings(model, 'cuda', train_dl)

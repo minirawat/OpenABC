@@ -4,6 +4,8 @@ from zipfile import ZipFile
 
 import pandas as pd
 from torch_geometric.data import Dataset, download_url
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 
 class NetlistGraphDataset(Dataset):
@@ -22,8 +24,9 @@ class NetlistGraphDataset(Dataset):
     def get(self, idx):
         filePathArchive = osp.join(self.processed_dir, self.processed_file_names[idx])
         filePathName = osp.basename(osp.splitext(filePathArchive)[0])
-        with ZipFile(filePathArchive) as myzip:
-            with myzip.open(filePathName) as myfile:
-                data = torch.load(myfile)
+        myfile = osp.join(filePathArchive.split('.zip')[0])
+        #with ZipFile(filePathArchive) as myzip:
+        #    with myzip.open(filePathName) as myfile:
+        data = torch.load(myfile)
         return data
 

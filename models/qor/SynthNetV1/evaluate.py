@@ -35,7 +35,7 @@ def plotChart(x,y,xlabel,ylabel,leg_label,title):
     plt.xlabel(xlabel, weight='bold')
     plt.ylabel(ylabel, weight='bold')
     plt.title(title,weight='bold')
-    plt.savefig(osp.join(DUMP_DIR,title+'.png'), fmt='png', bbox_inches='tight')
+    plt.savefig(osp.join(DUMP_DIR,title+'.png'), format='png', bbox_inches='tight')
 
 
 def evaluate_plot(model, device, dataloader):
@@ -52,7 +52,8 @@ def evaluate_plot(model, device, dataloader):
             predArray = pred.view(-1,1).detach().cpu().numpy()
             actualArray = lbl.view(-1,1).detach().cpu().numpy()
             batchData.append([predArray,actualArray,desName,synID])
-            mseVal = mse(pred, lbl)
+            #mseVal = mse(pred, lbl)
+            mseVal = torch.nn.MSELoss(pred, lbl)
             numInputs = pred.view(-1,1).size(0)
             totalMSE.update(mseVal,numInputs)
 
@@ -123,8 +124,8 @@ def main():
     model = model.to(device)
 
     # Initialize the dataloaders
-    train_dl = DataLoader(trainDS,shuffle=True,batch_size=batchSize,pin_memory=True,num_workers=4)
-    test_dl = DataLoader(testDS,shuffle=True,batch_size=batchSize,pin_memory=True,num_workers=4)
+    train_dl = DataLoader(trainDS,shuffle=True,batch_size=batchSize,pin_memory=True,num_workers=0)
+    test_dl = DataLoader(testDS,shuffle=True,batch_size=batchSize,pin_memory=True,num_workers=0)
 
     # Evaluate on train data
     trainMSE,trainBatchData = evaluate_plot(model, device, train_dl)

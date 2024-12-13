@@ -1,4 +1,4 @@
-from statistics import mean
+
 from webbrowser import get
 import torch
 from sklearn.metrics import mean_squared_error,mean_absolute_error,mean_absolute_percentage_error
@@ -9,6 +9,10 @@ import numpy as np
 
 def getMeanAndVariance(targetList):
     return np.mean(np.array(targetList)),np.std(np.array(targetList))
+
+def getMax(targetList):
+    return np.max(np.array(targetList))
+
 
 def computeMeanAndVarianceOfTargets(targetStatsDict,targetVar='nodes'):
     meanAndVarTargetDict = {}
@@ -22,6 +26,21 @@ def computeMeanAndVarianceOfTargets(targetStatsDict,targetVar='nodes'):
             meanTarget,varTarget = getMeanAndVariance(numNodes)
         meanAndVarTargetDict[des] = [meanTarget,varTarget]
     return meanAndVarTargetDict
+
+
+def computeMaxOfTargets(targetStatsDict,targetVar='nodes'):
+    meanAndVarTargetDict = {}
+    for des in targetStatsDict.keys():
+        numNodes,_,_,areaVar,delayVar = targetStatsDict[des]
+        if targetVar == 'delay':
+            maxTarget = getMax(delayVar)
+        elif targetVar == 'area':
+            maxTarget = getMax(areaVar)
+        else:
+            maxTarget = getMax(numNodes)
+        meanAndVarTargetDict[des] = [maxTarget,maxTarget]
+    return meanAndVarTargetDict
+
 
 def addNormalizedTargets(data,targetStatsDict,meanVarDataDict,targetVar='nodes'):
     sid = data.synID[0]
@@ -37,6 +56,24 @@ def addNormalizedTargets(data,targetStatsDict,meanVarDataDict,targetVar='nodes')
     else:
         targetIdentifier = 0 # Column number of target 'Nodes' in synthesisStatistics.pickle entries
         normTarget = (targetStatsDict[desName][targetIdentifier][sid] - meanVarDataDict[desName][0]) / meanVarDataDict[desName][1]
+        data.target = torch.tensor([normTarget],dtype=torch.float32)
+    return data
+
+
+def addNormalizedTargetsMax(data,targetStatsDict,maxDataDict,targetVar='nodes'):
+    sid = data.synID[0]
+    desName = data.desName[0]
+    if targetVar == 'delay':    
+        targetIdentifier = 4 # Column number of target 'Delay' in synthesisStatistics.pickle entries
+        normTarget = (targetStatsDict[desName][targetIdentifier][sid]) / maxDataDict[desName][1]
+        data.target = torch.tensor([normTarget],dtype=torch.float32)
+    elif targetVar == 'area':
+        targetIdentifier = 3 # Column number of target 'Area' in synthesisStatistics.pickle entries
+        normTarget = (targetStatsDict[desName][targetIdentifier][sid]) / maxDataDict[desName][1]
+        data.target = torch.tensor([normTarget],dtype=torch.float32)
+    else:
+        targetIdentifier = 0 # Column number of target 'Nodes' in synthesisStatistics.pickle entries
+        normTarget = (targetStatsDict[desName][targetIdentifier][sid]) / maxDataDict[desName][1]
         data.target = torch.tensor([normTarget],dtype=torch.float32)
     return data
 
@@ -163,8 +200,8 @@ def mapAttributesToTensor(data,areaDict,delayDict):
     return data
 
 
-def mse(y_pred,y_true):
-    return mean_squared_error(y_true.view(-1,1).detach().cpu().numpy(),y_pred.view(-1,1).detach().cpu().numpy())
+#def mse(y_pred,y_true):
+#    return mean_squared_error(y_true.view(-1,1).detach().cpu().numpy(),y_pred.view(-1,1).detach().cpu().numpy())
 
 def mae(y_pred,y_true):
     return mean_absolute_error(y_true.view(-1,1).detach().cpu().numpy(),y_pred.view(-1,1).detach().cpu().numpy())
@@ -193,7 +230,7 @@ def doScatterPlot(batchLen,batchSize,batchData,dumpDir,trainMode):
         fileName = osp.join(dumpDir,"scatterPlot_"+trainMode+"_"+d+".png")
         #else:
         #    fileName = osp.join(dumpDir,"scatterPlot_test_"+d+".png")
-        plt.savefig(fileName,fmt='png',bbox_inches='tight')
+        plt.savefig(fileName,format='png',bbox_inches='tight')
 
 
 def getTopKSimilarityPercentage(list1,list2,topkpercent):
@@ -208,7 +245,7 @@ def getTopKSimilarityPercentage(list1,list2,topkpercent):
         return 0
 
 
-def doScatterAndTopKRanking(batchLen,batchSize,batchData,dumpDir,trainMode):
+def doScatterAndTopKRanking(batchLen,batchSize,batchData,dumpDir,trainMode,meanVarTargetDict):
     predList = []
     actualList = []
     designList = []
@@ -242,7 +279,7 @@ def doScatterAndTopKRanking(batchLen,batchSize,batchData,dumpDir,trainMode):
         plt.xlabel('Actual', weight='bold', fontsize=25)
         plt.ylabel('Predicted', weight='bold', fontsize=25)
         fileName = osp.join(dumpDir,"scatterPlot_"+trainMode+"_"+d+".png")
-        plt.savefig(fileName,fmt='png',bbox_inches='tight')
+        plt.savefig(fileName,format='png',bbox_inches='tight')
         desDF1 = designDF.sort_values(by=['actual'])
         desDF2 = designDF.sort_values(by=['prediction'])
         desDF1_synID = desDF1.synID.to_list()
@@ -255,8 +292,11 @@ def doScatterAndTopKRanking(batchLen,batchSize,batchData,dumpDir,trainMode):
         accuracyFileWriter.write(endDelim)
         desDF1.to_csv(osp.join(dumpDir,"desDF1_"+trainMode+"_"+d+".csv"),index=False)
         desDF2.to_csv(osp.join(dumpDir,"desDF2_"+trainMode+"_"+d+".csv"),index=False)
-        mapeScore = mean_absolute_percentage_error(designDF.actual.to_list(),designDF.prediction.to_list())
-        print("MAPE ("+d+"): "+str(mapeScore))
+        #mapeScore = mean_absolute_percentage_error(designDF.actual.to_list(),designDF.prediction.to_list())
+        #print("MAPE ("+d+"): "+str(mapeScore))
+        #mapeScore = mean_absolute_percentage_error(np.array(designDF.actual.to_list())*meanVarTargetDict[d][1]+meanVarTargetDict[d][0],np.array(designDF.prediction.to_list())*meanVarTargetDict[d][1]+meanVarTargetDict[d][0])
+        mapeScore = mean_absolute_percentage_error(np.array(designDF.actual.to_list())*meanVarTargetDict[d][1],np.array(designDF.prediction.to_list())*meanVarTargetDict[d][1])
+        print("MAPE ("+d+"): "+str(mapeScore*100.0))
     accuracyFileWriter.close()
 
 

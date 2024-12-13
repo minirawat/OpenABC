@@ -119,7 +119,7 @@ class GNN_node(torch.nn.Module):
 
 class GNN(torch.nn.Module):
 
-    def __init__(self, node_encoder, input_dim, num_layer = 2, emb_dim = 128,gnn_type = 'gcn',graph_pooling = "mean"):
+    def __init__(self, node_encoder, input_dim, num_layer = 8, emb_dim = 128,gnn_type = 'gcn',graph_pooling = "mean"):
         super(GNN, self).__init__()
         self.num_layer = num_layer
         self.emb_dim = emb_dim
