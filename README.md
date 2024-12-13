@@ -61,34 +61,34 @@ Make sure that that the cudatoolkit version in the gpu matches with the pytorch-
 UPDATE: The code in this forked repository has been tested to work on newer and latest versions of pytorch/pyG libraries. This requires some manual configuration and more importantly conversion of the saved
 pt files into a format recognizable by newer PyG library. Here is our pip freeze list (limited to relevant entries for this project). We strongly recommend using MiniForge to create a virtual enviornment. Also, this configuration works fully on Mac M1 Pro ARM architecture and GCP Cloud VM CUDA enabled systems. (Tested in T4/L4/A100 GPU systems) 
 
-cycler==0.12.1
-joblib==1.4.2
-kiwisolver==1.4.7
-matplotlib==3.9.3
-multidict==6.1.0
-networkx==3.2.1
-numpy==2.0.1 
-packaging==24.2
-pandas==2.2.3
-pyg-lib==0.4.0+pt25
-pyparsing==3.2.0
-python-dateutil==2.9.0.post0
-pytz==2024.2
-scikit-learn==1.6.0
-scipy==1.14.1
-six==1.17.0
-sympy==1.13.1
-threadpoolctl==3.5.0
-torch==2.5.1
-torch-geometric==2.6.1
-torch_cluster==1.6.3
-torch_scatter==2.1.2
-torch_sparse==0.6.18
-torch_spline_conv==1.2.2
-torchaudio==2.5.1
-torchvision==0.20.1
-tqdm==4.67.1
-tzdata==2024.2
+- cycler==0.12.1
+- joblib==1.4.2
+- kiwisolver==1.4.7
+- matplotlib==3.9.3
+- multidict==6.1.0
+- networkx==3.2.1
+- numpy==2.0.1 
+- packaging==24.2
+- pandas==2.2.3
+- pyg-lib==0.4.0+pt25
+- pyparsing==3.2.0
+- python-dateutil==2.9.0.post0
+- pytz==2024.2
+- scikit-learn==1.6.0
+- scipy==1.14.1
+- six==1.17.0
+- sympy==1.13.1
+- threadpoolctl==3.5.0
+- torch==2.5.1
+- torch-geometric==2.6.1
+- torch_cluster==1.6.3
+- torch_scatter==2.1.2
+- torch_sparse==0.6.18
+- torch_spline_conv==1.2.2
+- torchaudio==2.5.1
+- torchvision==0.20.1
+- tqdm==4.67.1
+- tzdata==2024.2
 
 ## Organisation
 
